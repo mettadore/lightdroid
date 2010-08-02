@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -17,6 +18,8 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 	SharedPreferences settings;
 //	private TelnetSample telnet;
+	int seek_bar_value;
+	int[] channel_values;
 
 	/** Called when the activity is first created. */
     @Override
@@ -25,7 +28,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
         setContentView(R.layout.main);
 
 //        TelnetSample telnet = new TelnetSample("192.168.2.9", 3100);
-	    SeekBar slider = (SeekBar) findViewById(R.id.slider);
+	    final SeekBar slider = (SeekBar) findViewById(R.id.slider);
 	    slider.setOnSeekBarChangeListener(this);
 	    slider.setMax(255);
 
@@ -74,18 +77,16 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	    		togglebutton25,togglebutton26,togglebutton27,togglebutton28,togglebutton29,togglebutton30,
 	    		togglebutton31,togglebutton32,togglebutton33,togglebutton34,togglebutton35,togglebutton36,
 	    };
-
+	    channel_values = new int[36];
+	    for (int i=0; i<36; i++) {
+	    	channel_values[i] = 0;
+	    }
+	    
 	    OnClickListener toggleclick = new OnClickListener() {
 	        public void onClick(View v) {
-	        	
-	            // Perform action on clicks
-	            if (togglebutton1.isChecked()) {
-	                Toast.makeText(LightDroid.this, "checked", Toast.LENGTH_SHORT).show();
-	            } else {
-	                Toast.makeText(LightDroid.this, "Not checked", Toast.LENGTH_SHORT).show();
-	            }
 	        }
 	    };
+
 	    togglebutton1.setOnClickListener(toggleclick);
 	    togglebutton2.setOnClickListener(toggleclick);
 	    togglebutton3.setOnClickListener(toggleclick);
@@ -123,8 +124,64 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	    togglebutton35.setOnClickListener(toggleclick);
 	    togglebutton36.setOnClickListener(toggleclick);
 
+        final Button gobutton = (Button) findViewById(R.id.gobutton);
+        gobutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	updateValues(percentage());
+            }
+        });
+        final Button allbutton = (Button) findViewById(R.id.allbutton);
+        allbutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	for (int i=0; i<36; i++) {
+            		toggles[i].setChecked(true);
+            	}
+            	Toast.makeText(LightDroid.this, "Select All", Toast.LENGTH_SHORT).show();
+            }
+        });
+        final Button nonebutton = (Button) findViewById(R.id.nonebutton);
+        nonebutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	for (int i=0; i<36; i++) {
+            		toggles[i].setChecked(false);
+            	}
+            	Toast.makeText(LightDroid.this, "Select None", Toast.LENGTH_SHORT).show();
+            }
+        });
+        final Button resetbutton = (Button) findViewById(R.id.resetbutton);
+        resetbutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	for (int i=0; i<36; i++) {
+            		toggles[i].setChecked(true);
+            	}
+            	updateValues(0);
+            	slider.setProgress(0);
+            	for (int i=0; i<36; i++) {
+            		toggles[i].setChecked(false);
+            	}
+            	Toast.makeText(LightDroid.this, "All Channels Reset", Toast.LENGTH_SHORT).show();
+            }
+        });
 	    }
 
+    public int percentage() {
+		int value = (int) ((seek_bar_value / 255.0) * 100.0);
+		return value;
+    }
+    public void updateValues(int update_value) {
+    	String channels = "0";
+    	for (int i=1; i<37; i++) {
+    		if (toggles[i].isChecked()) {
+    			String ch;
+    			ch = String.format("+%d", i);
+    			channels = channels + ch;
+    		}
+    	}
+    	String it; 
+    	it = String.format("%s @ %d", channels, update_value);
+    	Toast.makeText(LightDroid.this, it, Toast.LENGTH_SHORT).show();
+
+    }
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 //		freq_bar_value = progress;
@@ -136,13 +193,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	}
 
 	public void onStopTrackingTouch(SeekBar seekBar) {
-//		settings.edit().putInt("slider1level", seekBar.getProgress()).commit();
-		int value = (int) seekBar.getProgress();
-		String cmd;
-		cmd = String.format("1 @ %d", value);
-		Toast.makeText(this, cmd, 2).show();
-
-		//telnet.sendCommand(cmd);
+		seek_bar_value = seekBar.getProgress();
 	}
 
 
