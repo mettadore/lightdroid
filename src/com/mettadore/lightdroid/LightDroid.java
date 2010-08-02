@@ -39,10 +39,10 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener {
 
 	public void onStopTrackingTouch(SeekBar seekBar) {
 //		settings.edit().putInt("slider1level", seekBar.getProgress()).commit();
-		int value = seekBar.getProgress();
-		String cmd;
-		cmd = String.format("1 @ %i", value);
-		//Toast.makeText(this, cmd, 2).show();
+//		int value = seekBar.getProgress();
+//		String cmd;
+//		cmd = String.format("1 @ %i", value);
+		Toast.makeText(this, "test", 2).show();
 
 		//telnet.sendCommand(cmd);
 	}
