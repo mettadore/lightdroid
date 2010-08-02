@@ -321,30 +321,6 @@
 		android:layout_width="fill_parent"
 		android:layout_weight="1"		
 	/>
-	<LinearLayout
-	    android:orientation="horizontal"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1">
-	    <Button android:id="@+id/allbutton"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="1"
-	    	android:text="Select All"
-		/>
-	    <Button android:id="@+id/nonebutton"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="1"
-	    	android:text="Select None"
-		/>
-	    <Button android:id="@+id/resetbutton"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="1"
-	    	android:text="Reset!"
-		/>
-	</LinearLayout>
 	    <Button android:id="@+id/resetbutton"
 	    	android:layout_width="fill_parent"
 	    	android:layout_height="wrap_content"
