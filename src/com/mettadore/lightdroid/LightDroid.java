@@ -20,6 +20,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	//	private TelnetSample telnet;
 	int seek_bar_value;
 	int[] channel_values;
+	ToggleButton[] toggles;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -87,42 +88,9 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 			}
 		};
 
-		togglebutton1.setOnClickListener(toggleclick);
-		togglebutton2.setOnClickListener(toggleclick);
-		togglebutton3.setOnClickListener(toggleclick);
-		togglebutton4.setOnClickListener(toggleclick);
-		togglebutton5.setOnClickListener(toggleclick);
-		togglebutton6.setOnClickListener(toggleclick);
-		togglebutton7.setOnClickListener(toggleclick);
-		togglebutton8.setOnClickListener(toggleclick);
-		togglebutton9.setOnClickListener(toggleclick);
-		togglebutton10.setOnClickListener(toggleclick);
-		togglebutton11.setOnClickListener(toggleclick);
-		togglebutton12.setOnClickListener(toggleclick);
-		togglebutton13.setOnClickListener(toggleclick);
-		togglebutton14.setOnClickListener(toggleclick);
-		togglebutton15.setOnClickListener(toggleclick);
-		togglebutton16.setOnClickListener(toggleclick);
-		togglebutton17.setOnClickListener(toggleclick);
-		togglebutton18.setOnClickListener(toggleclick);
-		togglebutton19.setOnClickListener(toggleclick);
-		togglebutton20.setOnClickListener(toggleclick);
-		togglebutton21.setOnClickListener(toggleclick);
-		togglebutton22.setOnClickListener(toggleclick);
-		togglebutton23.setOnClickListener(toggleclick);
-		togglebutton24.setOnClickListener(toggleclick);
-		togglebutton25.setOnClickListener(toggleclick);
-		togglebutton26.setOnClickListener(toggleclick);
-		togglebutton27.setOnClickListener(toggleclick);
-		togglebutton28.setOnClickListener(toggleclick);
-		togglebutton29.setOnClickListener(toggleclick);
-		togglebutton30.setOnClickListener(toggleclick);
-		togglebutton31.setOnClickListener(toggleclick);
-		togglebutton32.setOnClickListener(toggleclick);
-		togglebutton33.setOnClickListener(toggleclick);
-		togglebutton34.setOnClickListener(toggleclick);
-		togglebutton35.setOnClickListener(toggleclick);
-		togglebutton36.setOnClickListener(toggleclick);
+		for (ToggleButton toggle : toggles) {
+			toggle.setOnClickListener(toggleclick);
+			}
 
 		final Button gobutton = (Button) findViewById(R.id.gobutton);
 		gobutton.setOnClickListener(new View.OnClickListener() {
@@ -170,14 +138,15 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	}
 	public void updateValues(int update_value) {
 		String channels = "0";
-		for (int i=1; i<37; i++) {
+		String ch;
+		for (int i=0; i<36; i++) {
 			if (toggles[i].isChecked()) {
-				String ch;
-				ch = String.format("+%d", i);
-				channels = channels + ch;
-			}
+/*				ch = String.format("+%d", 1);
+				channels = channels.concat(ch);
+*/			}
 		}
-		String it; 
+		String it;
+		channels = channels.concat("+1");
 		it = String.format("%s @ %d", channels, update_value);
 		Toast.makeText(LightDroid.this, it, Toast.LENGTH_SHORT).show();
 
