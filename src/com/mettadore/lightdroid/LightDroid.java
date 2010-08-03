@@ -1,7 +1,13 @@
 package com.mettadore.lightdroid;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import org.apache.commons.net.telnet.TelnetClient;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -153,19 +159,33 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	}
 
 	public void sendTelnetCommand(String command) {
-		Toast.makeText(LightDroid.this, command, Toast.LENGTH_SHORT).show();
+		TelnetClient telnet = new TelnetClient();
+		InputStream in;
+		PrintStream out;
 		try {
-			byte[] b = new byte[] {(byte)192,(byte)168,(byte)2,(byte)9};
-			InetAddress addr = null;
-			addr = InetAddress.getByAddress(b);
-			InetAddress server = InetAddress.getByName("192.168.2.9");
-			TelnetSample telnet = new TelnetSample(addr);
-			telnet.sendCommand(command);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			telnet.connect( "192.168.2.9", 23 );
+			// Get input and output stream references
+			in = telnet.getInputStream();
+			out = new PrintStream( telnet.getOutputStream() );
+		   try {
+			 out.println( command );
+			 out.flush();
+			 Toast.makeText(LightDroid.this, command, Toast.LENGTH_SHORT).show();
+		   }
+		   catch( Exception e ) {
+			 e.printStackTrace();
+		   }
+		   telnet.disconnect(); //HERE
+			
+		  } catch (SocketException e) {
+			  // TODO Auto-generated catch block
+			  Toast.makeText(LightDroid.this, e.getMessage(), Toast.LENGTH_SHORT);
+		  } catch (IOException e) {
+			  // TODO Auto-generated catch block
+			  e.printStackTrace();
+		  }
 	}
+
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		//		freq_bar_value = progress;
