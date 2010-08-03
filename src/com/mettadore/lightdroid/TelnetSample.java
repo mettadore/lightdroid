@@ -2,6 +2,7 @@ package com.mettadore.lightdroid;
 
 import org.apache.commons.net.telnet.*;
 import java.io.*;
+import java.net.InetAddress;
 
 public class TelnetSample
 {
@@ -10,10 +11,10 @@ public class TelnetSample
   private PrintStream out;
   private char prompt = '>';
 
-  public TelnetSample( String server, int port ) {
+  public TelnetSample( InetAddress server) {
    try {
 	 // Connect to the specified server
-	 telnet.connect( server, port );
+	 telnet.connect( server );
 	 
 	 // Get input and output stream references
 	 in = telnet.getInputStream();
@@ -22,7 +23,7 @@ public class TelnetSample
 	 // Advance to a prompt
 //	 readUntil( prompt + " " );
    }
-   catch( Exception e ) {
+   catch( IOException e ) {
 	 e.printStackTrace();
    }
   }

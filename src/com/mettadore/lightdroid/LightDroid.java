@@ -1,5 +1,8 @@
 package com.mettadore.lightdroid;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -151,8 +154,17 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 	public void sendTelnetCommand(String command) {
 		Toast.makeText(LightDroid.this, command, Toast.LENGTH_SHORT).show();
-		TelnetSample telnet = new TelnetSample("192.168.2.9", 3100);
-		telnet.sendCommand(command);
+		try {
+			byte[] b = new byte[] {(byte)192,(byte)168,(byte)2,(byte)9};
+			InetAddress addr = null;
+			addr = InetAddress.getByAddress(b);
+			InetAddress server = InetAddress.getByName("192.168.2.9");
+			TelnetSample telnet = new TelnetSample(addr);
+			telnet.sendCommand(command);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
