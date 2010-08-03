@@ -104,7 +104,7 @@
 		<ToggleButton android:id="@+id/togglebutton10"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_weight="10"
+		    android:layout_weight="1"
 		    android:textOn="10"
 		    android:textOff="10"
 		/>

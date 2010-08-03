@@ -20,7 +20,7 @@ public class TelnetSample
 	 out = new PrintStream( telnet.getOutputStream() );
 
 	 // Advance to a prompt
-	 readUntil( prompt + " " );
+//	 readUntil( prompt + " " );
    }
    catch( Exception e ) {
 	 e.printStackTrace();
@@ -60,15 +60,15 @@ public class TelnetSample
    }
   }
 
-  public String sendCommand( String command ) {
+  public void sendCommand( String command ) {
    try {
 	 write( command );
-	 return readUntil( prompt + " " );
+//	 return readUntil( prompt + " " );
    }
    catch( Exception e ) {
 	 e.printStackTrace();
    }
-   return null;
+//   return null;
   }
 
   public void disconnect() {
@@ -79,7 +79,7 @@ public class TelnetSample
 	 e.printStackTrace();
    }
   }
-
+/*
   public static void main( String[] args ) {
    try {
 	 TelnetSample telnet = new TelnetSample( "192.168.2.9", 3100);
@@ -88,5 +88,5 @@ public class TelnetSample
    catch( Exception e ) {
 	 e.printStackTrace();
    }
-  }
+  }*/
 }

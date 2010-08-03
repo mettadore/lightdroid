@@ -17,7 +17,6 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 {
 
 	SharedPreferences settings;
-	//	private TelnetSample telnet;
 	int seek_bar_value;
 	int[] channel_values;
 	ToggleButton[] toggles;
@@ -28,7 +27,6 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		//        TelnetSample telnet = new TelnetSample("192.168.2.9", 3100);
 		final SeekBar slider = (SeekBar) findViewById(R.id.slider);
 		slider.setOnSeekBarChangeListener(this);
 		slider.setMax(255);
@@ -70,7 +68,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final ToggleButton togglebutton35 = (ToggleButton) findViewById(R.id.togglebutton35);
 		final ToggleButton togglebutton36 = (ToggleButton) findViewById(R.id.togglebutton36);
 
-		final ToggleButton[] toggles = {
+		toggles = new ToggleButton[] {
 				togglebutton1,togglebutton2,togglebutton3, togglebutton4,togglebutton5,togglebutton6,
 				togglebutton7,togglebutton8,togglebutton9,togglebutton10,togglebutton11,togglebutton12,
 				togglebutton13,togglebutton14,togglebutton15,togglebutton16,togglebutton17,togglebutton18,
@@ -141,15 +139,20 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		String ch;
 		for (int i=0; i<36; i++) {
 			if (toggles[i].isChecked()) {
-/*				ch = String.format("+%d", 1);
+				ch = String.format("+%d", i+1);
 				channels = channels.concat(ch);
-*/			}
+			}
 		}
 		String it;
-		channels = channels.concat("+1");
-		it = String.format("%s @ %d", channels, update_value);
-		Toast.makeText(LightDroid.this, it, Toast.LENGTH_SHORT).show();
+		it = String.format("%s @ %d%%", channels, update_value);
+		//Toast.makeText(LightDroid.this, it, Toast.LENGTH_SHORT).show();
+		sendTelnetCommand(it);
+	}
 
+	public void sendTelnetCommand(String command) {
+		Toast.makeText(LightDroid.this, command, Toast.LENGTH_SHORT).show();
+		TelnetSample telnet = new TelnetSample("192.168.2.9", 3100);
+		telnet.sendCommand(command);
 	}
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
