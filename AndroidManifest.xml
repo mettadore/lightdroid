@@ -12,9 +12,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Preferences" android:label="Preferences" />
-        
-
+        <activity android:name=".Preferences" android:label="Preferences">
+		</activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-sdk android:minSdkVersion="7" />

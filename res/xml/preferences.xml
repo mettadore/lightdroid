@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+   <PreferenceCategory android:title="Server Info">
+        <EditTextPreference  android:dialogTitle="Server IP"
+                             android:dialogMessage="EditTextMessage"
+                             android:dependency="Main_Option"
+                             android:key="serverip"
+                             android:title="Server IP"
+                             android:summary="IP address of the LightFactory telnet server"
+                             android:defaultValue="192.168.2.9"/>      
+
+        <EditTextPreference  android:dialogTitle="Server Port"
+                             android:dialogMessage="EditTextMessage"
+                             android:dependency="Main_Option"
+                             android:key="serverport"
+                             android:title="Server Port"
+                             android:summary="Port of the LightFactory telnet server"
+                             android:defaultValue="3100"/>      
+
+    </PreferenceCategory>
+      
+</PreferenceScreen>

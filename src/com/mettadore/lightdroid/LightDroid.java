@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -43,6 +44,8 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final SeekBar slider = (SeekBar) findViewById(R.id.slider);
 		slider.setOnSeekBarChangeListener(this);
 		slider.setMax(255);
+        Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
+        startActivity(settingsActivity);
 
 		final ToggleButton togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton1);
 		final ToggleButton togglebutton2 = (ToggleButton) findViewById(R.id.togglebutton2);
@@ -142,13 +145,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	public void toast(String message) {
 		Toast.makeText(LightDroid.this, message, Toast.LENGTH_SHORT).show();
 	}
-/*
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-*/
+
 	public int percentage() {
 		int value = (int) ((seek_bar_value / 255.0) * 100.0);
 		return value;
