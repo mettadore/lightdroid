@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Test</string>
-    <string name="channel_1">1  :</string>
-    <string name="channel_10">10 :</string>
+	<string name="app_name">LightDroid</string>
 </resources>

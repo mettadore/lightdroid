@@ -12,6 +12,9 @@ import org.apache.commons.net.telnet.TelnetClient;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -22,13 +25,14 @@ import android.widget.Toast;
 
 //import com.mettadore.*;
 
-public class LightDroid extends Activity implements OnSeekBarChangeListener 
+public class LightDroid extends Activity implements OnSeekBarChangeListener
 {
 
-	SharedPreferences settings;
+	public static final String PREFS_NAME = "LightDroidPrefsFile";
 	int seek_bar_value;
 	int[] channel_values;
 	ToggleButton[] toggles;
+	String telnet_server;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -86,8 +90,8 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				togglebutton31,togglebutton32,togglebutton33,togglebutton34,togglebutton35,togglebutton36,
 		};
 		channel_values = new int[36];
-		for (int i=0; i<36; i++) {
-			channel_values[i] = 0;
+		for (int value : channel_values) {
+			value = 0;
 		}
 
 		OnClickListener toggleclick = new OnClickListener() {
@@ -102,7 +106,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final Button gobutton = (Button) findViewById(R.id.gobutton);
 		gobutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				updateValues(percentage());
+				updateValues();
 			}
 		});
 		final Button allbutton = (Button) findViewById(R.id.allbutton);
@@ -111,7 +115,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				for (int i=0; i<36; i++) {
 					toggles[i].setChecked(true);
 				}
-				Toast.makeText(LightDroid.this, "Select All", Toast.LENGTH_SHORT).show();
+				toast("Select All");
 			}
 		});
 		final Button nonebutton = (Button) findViewById(R.id.nonebutton);
@@ -120,30 +124,36 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				for (int i=0; i<36; i++) {
 					toggles[i].setChecked(false);
 				}
-				Toast.makeText(LightDroid.this, "Select None", Toast.LENGTH_SHORT).show();
+				toast("Select None");
 			}
 		});
 		final Button resetbutton = (Button) findViewById(R.id.resetbutton);
 		resetbutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				for (int i=0; i<36; i++) {
-					toggles[i].setChecked(true);
-				}
-				updateValues(0);
+				sendTelnetCommand("All @ 0");
 				slider.setProgress(0);
 				for (int i=0; i<36; i++) {
 					toggles[i].setChecked(false);
 				}
-				Toast.makeText(LightDroid.this, "All Channels Reset", Toast.LENGTH_SHORT).show();
+				toast("Channels Reset");
 			}
 		});
+    }
+	public void toast(String message) {
+		Toast.makeText(LightDroid.this, message, Toast.LENGTH_SHORT).show();
 	}
-
+/*
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+*/
 	public int percentage() {
 		int value = (int) ((seek_bar_value / 255.0) * 100.0);
 		return value;
 	}
-	public void updateValues(int update_value) {
+	public void updateValues() {
 		String channels = "0";
 		String ch;
 		for (int i=0; i<36; i++) {
@@ -152,13 +162,15 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				channels = channels.concat(ch);
 			}
 		}
-		String it;
-		it = String.format("%s @ %d%%", channels, update_value);
-		//Toast.makeText(LightDroid.this, it, Toast.LENGTH_SHORT).show();
-		sendTelnetCommand(it);
+		String str;
+		String cmd;
+		str = String.format("%s @ %d%%", channels, percentage());
+		cmd = String.format("%s @ DMX %d", channels, (int) seek_bar_value);
+		sendTelnetCommand(cmd);
 	}
 
 	public void sendTelnetCommand(String command) {
+		// TODO: move back to the TelnetSample class and refactor
 		TelnetClient telnet = new TelnetClient();
 		InputStream in;
 		PrintStream out;
@@ -170,7 +182,6 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		   try {
 			 out.println( command );
 			 out.flush();
-			 Toast.makeText(LightDroid.this, command, Toast.LENGTH_SHORT).show();
 		   }
 		   catch( Exception e ) {
 			 e.printStackTrace();
@@ -179,7 +190,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 			
 		  } catch (SocketException e) {
 			  // TODO Auto-generated catch block
-			  Toast.makeText(LightDroid.this, e.getMessage(), Toast.LENGTH_SHORT);
+			  e.printStackTrace();
 		  } catch (IOException e) {
 			  // TODO Auto-generated catch block
 			  e.printStackTrace();
