@@ -15,7 +15,7 @@ public final class R {
     }
     public static final class id {
         public static final int allbutton=0x7f060000;
-        public static final int gobutton=0x7f060028;
+        public static final int connectbutton=0x7f060028;
         public static final int nonebutton=0x7f060001;
         public static final int resetbutton=0x7f060002;
         public static final int slider=0x7f060027;

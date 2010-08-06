@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.telnet.TelnetClient;
 
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -29,23 +32,28 @@ import android.widget.Toast;
 public class LightDroid extends Activity implements OnSeekBarChangeListener
 {
 
-	public static final String PREFS_NAME = "LightDroidPrefsFile";
 	int seek_bar_value;
 	int[] channel_values;
-	ToggleButton[] toggles;
+	ArrayList<ToggleButton> toggles;
 	String telnet_server;
+	String server_ip;
+	int server_port;
+	TelnetClient telnet = new TelnetClient();
+	InputStream in;
+	PrintStream out;
+
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		//		Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
+		//		startActivity(settingsActivity);
 
 		final SeekBar slider = (SeekBar) findViewById(R.id.slider);
 		slider.setOnSeekBarChangeListener(this);
 		slider.setMax(255);
-        Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
-        startActivity(settingsActivity);
 
 		final ToggleButton togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton1);
 		final ToggleButton togglebutton2 = (ToggleButton) findViewById(R.id.togglebutton2);
@@ -84,14 +92,44 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final ToggleButton togglebutton35 = (ToggleButton) findViewById(R.id.togglebutton35);
 		final ToggleButton togglebutton36 = (ToggleButton) findViewById(R.id.togglebutton36);
 
-		toggles = new ToggleButton[] {
-				togglebutton1,togglebutton2,togglebutton3, togglebutton4,togglebutton5,togglebutton6,
-				togglebutton7,togglebutton8,togglebutton9,togglebutton10,togglebutton11,togglebutton12,
-				togglebutton13,togglebutton14,togglebutton15,togglebutton16,togglebutton17,togglebutton18,
-				togglebutton19,togglebutton20,togglebutton21,togglebutton22,togglebutton23,togglebutton24,
-				togglebutton25,togglebutton26,togglebutton27,togglebutton28,togglebutton29,togglebutton30,
-				togglebutton31,togglebutton32,togglebutton33,togglebutton34,togglebutton35,togglebutton36,
-		};
+		toggles = new ArrayList();
+		toggles.add(togglebutton1);
+		toggles.add(togglebutton2);
+		toggles.add(togglebutton3);
+		toggles.add(togglebutton4);
+		toggles.add(togglebutton5);
+		toggles.add(togglebutton6);
+		toggles.add(togglebutton7);
+		toggles.add(togglebutton8);
+		toggles.add(togglebutton9);
+		toggles.add(togglebutton10);
+		toggles.add(togglebutton11);
+		toggles.add(togglebutton12);
+		toggles.add(togglebutton13);
+		toggles.add(togglebutton14);
+		toggles.add(togglebutton15);
+		toggles.add(togglebutton16);
+		toggles.add(togglebutton17);
+		toggles.add(togglebutton18);
+		toggles.add(togglebutton19);
+		toggles.add(togglebutton20);
+		toggles.add(togglebutton21);
+		toggles.add(togglebutton22);
+		toggles.add(togglebutton23);
+		toggles.add(togglebutton24);
+		toggles.add(togglebutton25);
+		toggles.add(togglebutton26);
+		toggles.add(togglebutton27);
+		toggles.add(togglebutton28);
+		toggles.add(togglebutton29);
+		toggles.add(togglebutton30);
+		toggles.add(togglebutton31);
+		toggles.add(togglebutton32);
+		toggles.add(togglebutton33);
+		toggles.add(togglebutton34);
+		toggles.add(togglebutton35);
+		toggles.add(togglebutton36);
+
 		channel_values = new int[36];
 		for (int value : channel_values) {
 			value = 0;
@@ -99,34 +137,72 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 		OnClickListener toggleclick = new OnClickListener() {
 			public void onClick(View v) {
+				int i = toggles.indexOf((ToggleButton) v);
+				String s;
+				if (((ToggleButton) v).isChecked()) {
+					s = "+";
+				} else {
+					s = "-";
+				}
+				String cmd;
+				cmd = String.format("%s%d", s, i + 1);
+				sendTelnetCommand(cmd);
 			}
 		};
+		
+		final ToggleButton connectbutton = (ToggleButton) findViewById(R.id.connectbutton);
 
+		OnClickListener connectionlistener = new OnClickListener() {
+			public void onClick(View v) {
+				if (((ToggleButton) v).isChecked()) {
+					try {
+						telnet.connect( "192.168.2.9", 3100 );
+						toast("Connected to telnet server");
+					} catch( Exception e ) {
+						e.printStackTrace();
+						toast("Cannot connect to server");
+					}
+				} else {
+					try {
+						telnet.disconnect();
+						toast("Disconnect from telnet server");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						toast("Problem disconnecting");
+					}
+				}
+			}
+		};
+		connectbutton.setOnClickListener(connectionlistener);
 		for (ToggleButton toggle : toggles) {
 			toggle.setOnClickListener(toggleclick);
-			}
-
+		}
+		
+/*
 		final Button gobutton = (Button) findViewById(R.id.gobutton);
 		gobutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				updateValues();
+				//				updateValues();
 			}
-		});
+		}); */
 		final Button allbutton = (Button) findViewById(R.id.allbutton);
 		allbutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				for (int i=0; i<36; i++) {
-					toggles[i].setChecked(true);
+				for (ToggleButton toggle : toggles) {
+					toggle.setChecked(true);
 				}
+				sendTelnetCommand("+1/36");
 				toast("Select All");
 			}
 		});
 		final Button nonebutton = (Button) findViewById(R.id.nonebutton);
 		nonebutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				for (int i=0; i<36; i++) {
-					toggles[i].setChecked(false);
+				for (ToggleButton toggle : toggles) {
+					toggle.setChecked(false);
 				}
+				sendTelnetCommand("-1/36");
 				toast("Select None");
 			}
 		});
@@ -134,17 +210,35 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		resetbutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				sendTelnetCommand("All @ 0");
+				sendTelnetCommand("Clear all");
 				slider.setProgress(0);
-				for (int i=0; i<36; i++) {
-					toggles[i].setChecked(false);
+				for (ToggleButton toggle : toggles) {
+					toggle.setChecked(false);
 				}
 				toast("Channels Reset");
 			}
 		});
-    }
+	}
 	public void toast(String message) {
 		Toast.makeText(LightDroid.this, message, Toast.LENGTH_SHORT).show();
 	}
+	@Override
+	protected void onStop(){
+		super.onStop();
+
+		// We need an Editor object to make preference changes.
+		// All objects are from android.context.Context
+		SharedPreferences settings = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("serverip", server_ip);
+		String s;
+		s = String.format("%d", server_port);
+		editor.putString("serverport", s);
+
+		// Commit the edits!
+		editor.commit();
+	}
+
 
 	public int percentage() {
 		int value = (int) ((seek_bar_value / 255.0) * 100.0);
@@ -153,8 +247,9 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	public void updateValues() {
 		String channels = "0";
 		String ch;
-		for (int i=0; i<36; i++) {
-			if (toggles[i].isChecked()) {
+		int i = 1;
+		for (ToggleButton toggle : toggles) {
+			if (toggle.isChecked()) {
 				ch = String.format("+%d", i+1);
 				channels = channels.concat(ch);
 			}
@@ -168,32 +263,23 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 	public void sendTelnetCommand(String command) {
 		// TODO: move back to the TelnetSample class and refactor
-		TelnetClient telnet = new TelnetClient();
-		InputStream in;
-		PrintStream out;
+		// Restore preferences
+		/*       SharedPreferences settings = getPreferences(MODE_PRIVATE);
+       server_ip = settings.getString("serverip", "");
+       String port = (String) settings.getString("serverport","");
+       server_port = Integer.parseInt(port.trim());
+		 */
 		try {
-			telnet.connect( "192.168.2.9", 23 );
 			// Get input and output stream references
 			in = telnet.getInputStream();
 			out = new PrintStream( telnet.getOutputStream() );
-		   try {
-			 out.println( command );
-			 out.flush();
-		   }
-		   catch( Exception e ) {
-			 e.printStackTrace();
-		   }
-		   telnet.disconnect(); //HERE
-			
-		  } catch (SocketException e) {
-			  // TODO Auto-generated catch block
-			  e.printStackTrace();
-		  } catch (IOException e) {
-			  // TODO Auto-generated catch block
-			  e.printStackTrace();
-		  }
+			out.println( command );
+			out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
+	
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		//		freq_bar_value = progress;
@@ -206,6 +292,9 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		seek_bar_value = seekBar.getProgress();
+		String s;
+		s = String.format("@ DMX %d", seek_bar_value);
+		sendTelnetCommand(s);
 	}
 
 

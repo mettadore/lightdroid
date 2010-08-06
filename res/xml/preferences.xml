@@ -5,7 +5,6 @@
    <PreferenceCategory android:title="Server Info">
         <EditTextPreference  android:dialogTitle="Server IP"
                              android:dialogMessage="EditTextMessage"
-                             android:dependency="Main_Option"
                              android:key="serverip"
                              android:title="Server IP"
                              android:summary="IP address of the LightFactory telnet server"
@@ -13,11 +12,14 @@
 
         <EditTextPreference  android:dialogTitle="Server Port"
                              android:dialogMessage="EditTextMessage"
-                             android:dependency="Main_Option"
                              android:key="serverport"
                              android:title="Server Port"
                              android:summary="Port of the LightFactory telnet server"
                              android:defaultValue="3100"/>      
+        <Preference
+                android:title="Custom Preference"
+                android:summary="This works almost like a button"
+                android:key="customPref" />
 
     </PreferenceCategory>
       
