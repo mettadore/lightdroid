@@ -15,10 +15,12 @@ public final class R {
     }
     public static final class id {
         public static final int allbutton=0x7f060000;
-        public static final int connectbutton=0x7f060028;
+        public static final int connectbutton=0x7f06002a;
+        public static final int fullbutton=0x7f060029;
         public static final int nonebutton=0x7f060001;
+        public static final int offbutton=0x7f060027;
         public static final int resetbutton=0x7f060002;
-        public static final int slider=0x7f060027;
+        public static final int slider=0x7f060028;
         public static final int togglebutton1=0x7f060003;
         public static final int togglebutton10=0x7f06000c;
         public static final int togglebutton11=0x7f06000d;

@@ -315,18 +315,34 @@
 		    android:textOff="36"
 		/>
 	</LinearLayout>
-	<SeekBar 
-		android:id="@+id/slider" 
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent"
-		android:layout_weight="1"		
-	/>
-	    <ToggleButton android:id="@+id/connectbutton"
-	    	android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="1"
-	    	android:textOn="Disconnect"
-	    	android:textOff="Connect"
+	<LinearLayout
+	     android:orientation="horizontal"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+		<Button
+		    android:id="@+id/offbutton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Off" />
+		<SeekBar 
+			android:id="@+id/slider" 
+			android:layout_height="wrap_content" 
+			android:layout_width="fill_parent"
+			android:layout_weight="1"		
+		/>
+    <Button
+        android:id="@+id/fullbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Full" />
+	</LinearLayout>
+    <ToggleButton android:id="@+id/connectbutton"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1"
+    	android:textOn="Disconnect"
+    	android:textOff="Connect"
 		/>
 </LinearLayout>
     

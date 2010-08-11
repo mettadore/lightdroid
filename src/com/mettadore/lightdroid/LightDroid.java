@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 import org.apache.commons.net.telnet.TelnetClient;
@@ -137,6 +138,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 		OnClickListener toggleclick = new OnClickListener() {
 			public void onClick(View v) {
+/*
 				int i = toggles.indexOf((ToggleButton) v);
 				String s;
 				if (((ToggleButton) v).isChecked()) {
@@ -147,7 +149,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				String cmd;
 				cmd = String.format("%s%d", s, i + 1);
 				sendTelnetCommand(cmd);
-			}
+*/			}
 		};
 		
 		final ToggleButton connectbutton = (ToggleButton) findViewById(R.id.connectbutton);
@@ -209,6 +211,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final Button resetbutton = (Button) findViewById(R.id.resetbutton);
 		resetbutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				sendTelnetCommand("+1/36");
 				sendTelnetCommand("All @ 0");
 				sendTelnetCommand("Clear all");
 				slider.setProgress(0);
@@ -218,7 +221,28 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				toast("Channels Reset");
 			}
 		});
+		final Button offbutton = (Button) findViewById(R.id.offbutton);
+		offbutton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				String channels = channelsList();
+				sendTelnetCommand(channels);
+				String command = String.format("%s @ 0", channels);
+				sendTelnetCommand(command);
+				slider.setProgress(0);
+			}
+		});
+		final Button fullbutton = (Button) findViewById(R.id.fullbutton);
+		fullbutton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				String channels = channelsList();
+				sendTelnetCommand(channels);
+				String command = String.format("%s @ 100", channels);
+				sendTelnetCommand(command);
+				slider.setProgress(0);
+			}
+		});
 	}
+	
 	public void toast(String message) {
 		Toast.makeText(LightDroid.this, message, Toast.LENGTH_SHORT).show();
 	}
@@ -244,21 +268,38 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		int value = (int) ((seek_bar_value / 255.0) * 100.0);
 		return value;
 	}
-	public void updateValues() {
-		String channels = "0";
-		String ch;
+	
+	public String channelsList() {
+		BitSet bs = new BitSet();
 		int i = 1;
-		for (ToggleButton toggle : toggles) {
-			if (toggle.isChecked()) {
-				ch = String.format("+%d", i+1);
-				channels = channels.concat(ch);
-			}
-		}
+	    for (ToggleButton toggle : toggles) {
+	    	if (toggle.isChecked()) {
+	    		bs.set(i);
+	    	}
+	    	i++;
+	    }
+	
+	    StringBuilder sb = new StringBuilder();
+	    for (int begin, end = -1; (begin = bs.nextSetBit(end + 1)) != -1; ) {
+	        end = bs.nextClearBit(begin) - 1;
+	        if (sb.length() > 0) sb.append(", ");
+	        sb.append(
+	            (begin == end)
+	                ? String.format("+%d", begin)
+	                : String.format("+%d/%d", begin, end)
+	        );
+	    }
+	    return sb.toString();
+	}
+	
+	public void updateValues() {
+		String channels = channelsList();
 		String str;
 		String cmd;
 		str = String.format("%s @ %d%%", channels, percentage());
 		cmd = String.format("%s @ DMX %d", channels, (int) seek_bar_value);
 		sendTelnetCommand(cmd);
+		toast(str);
 	}
 
 	public void sendTelnetCommand(String command) {
@@ -293,8 +334,10 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		seek_bar_value = seekBar.getProgress();
 		String s;
-		s = String.format("@ DMX %d", seek_bar_value);
+		String channels = channelsList();
+		s = String.format("%s @ DMX %d", channels, seek_bar_value);
 		sendTelnetCommand(s);
+		toast(s);
 	}
 
 
