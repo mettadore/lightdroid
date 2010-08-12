@@ -129,7 +129,6 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 
 		OnClickListener toggleclick = new OnClickListener() {
 			public void onClick(View v) {
-				
 			}
 		};
 		
@@ -210,7 +209,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 				sendTelnetCommand(channels);
 				String command = String.format("%s @ 100", channels);
 				sendTelnetCommand(command);
-				slider.setProgress(0);
+				slider.setProgress(255);
 			}
 		});
 	}
