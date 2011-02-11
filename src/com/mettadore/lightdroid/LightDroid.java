@@ -9,7 +9,6 @@ import java.util.BitSet;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,7 +83,7 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		final ToggleButton togglebutton35 = (ToggleButton) findViewById(R.id.togglebutton35);
 		final ToggleButton togglebutton36 = (ToggleButton) findViewById(R.id.togglebutton36);
 
-		toggles = new ArrayList();
+		toggles = new ArrayList<ToggleButton>();
 		toggles.add(togglebutton1);
 		toggles.add(togglebutton2);
 		toggles.add(togglebutton3);
@@ -122,11 +121,11 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 		toggles.add(togglebutton35);
 		toggles.add(togglebutton36);
 
-		channel_values = new int[36];
+/*		channel_values = new int[36];
 		for (int value : channel_values) {
 			value = 0;
 		}
-
+*/
 		OnClickListener toggleclick = new OnClickListener() {
 			public void onClick(View v) {
 			}
@@ -247,13 +246,6 @@ public class LightDroid extends Activity implements OnSeekBarChangeListener
 	}
 	
 	public void sendTelnetCommand(String command) {
-		// TODO: move back to the TelnetSample class and refactor
-		// Restore preferences
-		/*       SharedPreferences settings = getPreferences(MODE_PRIVATE);
-       server_ip = settings.getString("serverip", "");
-       String port = (String) settings.getString("serverport","");
-       server_port = Integer.parseInt(port.trim());
-		 */
 		try {
 			// Get input and output stream references
 			in = telnet.getInputStream();

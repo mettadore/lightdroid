@@ -9,7 +9,6 @@ public class TelnetSample
   private TelnetClient telnet = new TelnetClient();
   private InputStream in;
   private PrintStream out;
-  private char prompt = '>';
 
   public TelnetSample( InetAddress server) {
    try {
