@@ -129,33 +129,7 @@ public class ButtonActivity extends Activity implements OnSeekBarChangeListener
 			public void onClick(View v) {
 			}
 		};
-		
-		final ToggleButton connectbutton = (ToggleButton) findViewById(R.id.connectbutton);
 
-		OnClickListener connectionlistener = new OnClickListener() {
-			public void onClick(View v) {
-				if (((ToggleButton) v).isChecked()) {
-					try {
-						telnet.connect( "192.168.2.9", 3100 );
-						toast("Connected to telnet server");
-					} catch( Exception e ) {
-						e.printStackTrace();
-						toast(e.getMessage());
-//						toast("Cannot connect to server");
-					}
-				} else {
-					try {
-						telnet.disconnect();
-						toast("Disconnect from telnet server");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						toast("Problem disconnecting");
-					}
-				}
-			}
-		};
-		connectbutton.setOnClickListener(connectionlistener);
 		for (ToggleButton toggle : toggles) {
 			toggle.setOnClickListener(toggleclick);
 		}
@@ -245,18 +219,6 @@ public class ButtonActivity extends Activity implements OnSeekBarChangeListener
 	    return sb.toString();
 	}
 	
-	public void sendTelnetCommand(String command) {
-		try {
-			// Get input and output stream references
-			in = telnet.getInputStream();
-			out = new PrintStream( telnet.getOutputStream() );
-			out.println( command );
-			out.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		//		freq_bar_value = progress;
@@ -272,7 +234,7 @@ public class ButtonActivity extends Activity implements OnSeekBarChangeListener
 		String s;
 		String channels = channelsList();
 		s = String.format("%s @ DMX %d", channels, seek_bar_value);
-		sendTelnetCommand(s);
+		LightDroid.class.sendTelnetCommand(s);
 	}
 
 
