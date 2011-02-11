@@ -23,7 +23,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class LightDroid extends TabActivity // implements OnSeekBarChangeListener
+public class LightDroid extends TabActivity // implements
+											// OnSeekBarChangeListener
 {
 	String telnet_server;
 	String server_ip;
@@ -32,49 +33,55 @@ public class LightDroid extends TabActivity // implements OnSeekBarChangeListene
 	InputStream in;
 	PrintStream out;
 	OnClickListener connectionListener;
-	
-	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.main);
-	
-	    Resources res = getResources(); // Resource object to get Drawables
-	    TabHost tabHost = getTabHost();  // The activity TabHost
-	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-	    Intent intent;  // Reusable Intent for each tab
-	    	
-	    // Create an Intent to launch an Activity for the tab (to be reused)
-	    intent = new Intent().setClass(this, ButtonActivity.class);
-	
-	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("buttons").setIndicator("Buttons",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-	
-	    // Do the same for the other tabs
-	    intent = new Intent().setClass(this, SliderActivity.class);
-	    spec = tabHost.newTabSpec("sliders").setIndicator("Sliders",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
 
-	    // Do the same for the other tabs
-	    intent = new Intent().setClass(this, CueActivity.class);
-	    spec = tabHost.newTabSpec("cues").setIndicator("Cues",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-	    
-	    tabHost.setCurrentTab(0);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		Resources res = getResources(); // Resource object to get Drawables
+		TabHost tabHost = getTabHost(); // The activity TabHost
+		TabHost.TabSpec spec; // Resusable TabSpec for each tab
+		Intent intent; // Reusable Intent for each tab
+
+		// Create an Intent to launch an Activity for the tab (to be reused)
+		intent = new Intent().setClass(this, ButtonActivity.class);
+
+		// Initialize a TabSpec for each tab and add it to the TabHost
+		spec = tabHost
+				.newTabSpec("buttons")
+				.setIndicator("Buttons",
+						res.getDrawable(R.drawable.ic_tab_artists))
+				.setContent(intent);
+		tabHost.addTab(spec);
+
+		// Do the same for the other tabs
+		intent = new Intent().setClass(this, SliderActivity.class);
+		spec = tabHost
+				.newTabSpec("sliders")
+				.setIndicator("Sliders",
+						res.getDrawable(R.drawable.ic_tab_artists))
+				.setContent(intent);
+		tabHost.addTab(spec);
+
+		// Do the same for the other tabs
+		intent = new Intent().setClass(this, CueActivity.class);
+		spec = tabHost
+				.newTabSpec("cues")
+				.setIndicator("Cues",
+						res.getDrawable(R.drawable.ic_tab_artists))
+				.setContent(intent);
+		tabHost.addTab(spec);
+
+		tabHost.setCurrentTab(0);
 		final ToggleButton connectbutton = (ToggleButton) findViewById(R.id.connectbutton);
 
 		OnClickListener connectionlistener = new OnClickListener() {
 			public void onClick(View v) {
 				if (((ToggleButton) v).isChecked()) {
 					try {
-						telnet.connect( "192.168.2.9", 3100 );
+						telnet.connect("192.168.2.9", 3100);
 						toast("Connected to telnet server");
-					} catch( Exception e ) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						toast("Cannot connect to server");
 					}
@@ -92,22 +99,21 @@ public class LightDroid extends TabActivity // implements OnSeekBarChangeListene
 		};
 		connectbutton.setOnClickListener(connectionlistener);
 	}
+
 	public void sendTelnetCommand(String command) {
 		try {
 			// Get input and output stream references
 			in = telnet.getInputStream();
-			out = new PrintStream( telnet.getOutputStream() );
-			out.println( command );
+			out = new PrintStream(telnet.getOutputStream());
+			out.println(command);
 			out.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void toast(String message) {
 		Toast.makeText(LightDroid.this, message, Toast.LENGTH_SHORT).show();
 	}
 
-
 }
-
